@@ -38,10 +38,7 @@ if (NOT FakeIt_POPULATED)
 endif ()
 
 # Collect the tests files
-set(TESTS_FILE_LIST test-cases/QuickSortTesting.cpp
-        test-cases/Test.cpp
-        test-cases/Test2.cpp
-        test-cases/Test3.cpp)
+set(TESTS_FILE_LIST test-cases/QuickSortTesting.cpp)
 
 # Make the tests executable
 add_executable(${PROJECT_NAME})

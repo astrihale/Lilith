@@ -32,9 +32,8 @@ public:
      *
      * @param original The original vector of values that needs to be sorted.
      * @param order The order in which values should be sorted.
-     * @return The new copy containing elements in the sorted order.
      */
-    virtual Vector<T> sort(const Vector<T>& original, SortingOrder order) const = 0;
+    virtual void sort(Vector<T>& original, SortingOrder order) const = 0;
 };
 }    // namespace descendants::algorithms::sorts
 

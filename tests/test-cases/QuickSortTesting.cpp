@@ -19,29 +19,28 @@ private:
     std::int32_t m_value;
 };
 
-TEST_CASE("MergeSortTesting", "[TestObject]")
+TEST_CASE("QuickSortTesting", "[TestObject]")
 {
     // Initialize the algorithm host
-    const auto algorithm = QuickSort<TestObject>{};
+    auto algorithm = QuickSort<TestObject>{};
 
-    SECTION("Check Merging")
+    // Common variables
+    auto vector = Vector<TestObject>{TestObject{10}, TestObject{80}, TestObject{30}, TestObject{90},
+                                     TestObject{40}, TestObject{50}, TestObject{70}};
+
+    SECTION("Sort example array")
     {
-        auto left = std::vector<TestObject>{TestObject{1}, TestObject{2}};
-        auto right = std::vector<TestObject>{TestObject{3}, TestObject{4}};
-        algorithm.merge(left, right);
-        REQUIRE(left.size() == 4);
-        auto i = std::int32_t{1};
-        for (const auto& value : left)
-            REQUIRE(i++ == value.getValue());
+        algorithm.sort(vector, SortingOrder::Ascending);
+        REQUIRE(vector.size() == 7);
+        for (auto i = std::size_t{0}; i < 6; ++i)
+            REQUIRE(vector[i] <= vector[i + 1]);
     }
 
-    SECTION("Sort First 5 Numbers That Are In Reverse")
+    SECTION("Sort in descending order")
     {
-        auto vector = Vector<TestObject>{TestObject{5}, TestObject{4}, TestObject{3}, TestObject{2}, TestObject{1}};
-        const auto sorted = algorithm.sort(vector, SortingOrder::Ascending);
-        REQUIRE(sorted.size() == 5);
-        auto i = std::int32_t{1};
-        for (const auto& value : sorted)
-            REQUIRE(i++ == value.getValue());
+        algorithm.sort(vector, SortingOrder::Descending);
+        REQUIRE(vector.size() == 7);
+        for (auto i = std::size_t{0}; i < 6; ++i)
+            REQUIRE(vector[i] >= vector[i + 1]);
     }
 }
