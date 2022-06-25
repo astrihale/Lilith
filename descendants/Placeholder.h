@@ -5,6 +5,8 @@ namespace descendants
 {
 class Placeholder
 {
+public:
+    static void foo();
 };
 }    // namespace descendants
 

@@ -31,6 +31,20 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedanti
 option(BUILD_SHARED "Build the main library as a shared library." ON)
 option(BUILD_TESTS "Build the tests and require testing dependencies." ON)
 
+# Include dependencies
+include(FetchContent)
+
+# Import the logger
+FetchContent_Declare(
+        plog
+        GIT_REPOSITORY https://github.com/SergiusTheBest/plog
+        GIT_TAG 1.1.8
+)
+FetchContent_GetProperties(plog)
+if (NOT plog_POPULATED)
+    FetchContent_MakeAvailable(plog)
+endif ()
+
 # Decide the library type
 if (${BUILD_SHARED})
     set(LIB_TYPE SHARED)
@@ -46,6 +60,7 @@ set(HEADER_FILE_LIST descendants/Placeholder.h
 # Build the library
 add_library(${PROJECT_NAME} ${LIB_TYPE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} PUBLIC plog::plog)
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_FILE_LIST})
 target_sources(${PROJECT_NAME} PUBLIC ${HEADER_FILE_LIST})
 
