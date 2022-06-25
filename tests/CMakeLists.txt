@@ -7,10 +7,10 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors \
  -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-documentation-unknown-command \
  -Wno-covered-switch-default -Wno-switch-enum -Wno-sign-conversion -Wno-double-promotion -Wno-old-style-cast \
- -Wno-extra-semi -Wno-exit-time-destructors -Wno-deprecated-copy-with-user-provided-dtor -Wno-non-virtual-dtor \
- -Wno-suggest-destructor-override -Wno-inconsistent-missing-destructor-override -Wno-deprecated-copy-with-dtor \
- -Wno-global-constructors -Wno-redundant-parens -Wno-zero-as-null-pointer-constant -Wno-zero-length-array \
- -Wno-weak-vtables -Wno-shorten-64-to-32 -Wno-disabled-macro-expansion -Wno-suggest-override")
+ -Wno-extra-semi -Wno-exit-time-destructors -Wno-non-virtual-dtor -Wno-suggest-destructor-override \
+ -Wno-inconsistent-missing-destructor-override -Wno-global-constructors -Wno-redundant-parens \
+ -Wno-zero-as-null-pointer-constant -Wno-zero-length-array -Wno-weak-vtables -Wno-shorten-64-to-32 \
+ -Wno-disabled-macro-expansion -Wno-suggest-override")
 
 # Obtain the dependencies
 include(FetchContent)
