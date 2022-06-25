@@ -37,3 +37,6 @@ out/
 
 # CLion
 .idea/
+
+# MacOS Finder
+.DS_Store
