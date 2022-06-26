@@ -40,9 +40,6 @@ option(ENABLE_INSTALL "Whether to enable the install target, and CPack settings 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors \
  -Wno-c++98-compat")
-if (${BUILD_TESTS})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-endif ()
 
 # Adding the dependencies
 include(cmake/dependencies.cmake)
@@ -56,12 +53,14 @@ endif ()
 
 # Collect all the files
 set(SOURCE_FILE_LIST descendants/Placeholder.cpp)
-set(HEADER_FILE_LIST descendants/Placeholder.h
-        descendants/Types.h
+set(HEADER_FILE_LIST descendants/Types.h
         descendants/Version.h
         descendants/algorithms/ComparableObject.h
         descendants/algorithms/sorts/SortingAlgorithm.h
-        descendants/algorithms/sorts/QuickSort.h)
+        descendants/algorithms/sorts/QuickSort.h
+        descendants/printing/ArrayPrinter.h
+        descendants/printing/ObjectArrayPrinter.h
+        descendants/printing/Printable.h)
 
 # Build the library
 add_library(${PROJECT_NAME} ${LIB_TYPE})

@@ -5,9 +5,21 @@
 
 #include <compare>
 #include <plog/Log.h>
+#include <iostream>
 
 namespace descendants::algorithms::sorts
 {
+/**
+ * This is the enumeration that is used to tell the QuickSort algorithm
+ * which element of the vector should be chosen as the pivot.
+ */
+enum class QuickSortPivotStrategy
+{
+    First,
+    Middle,
+    Last
+};
+
 /**
  * This is the implementation of the QuickSort algorithm.
  *
@@ -16,6 +28,27 @@ namespace descendants::algorithms::sorts
 template <Comparable T> class QuickSort : public SortingAlgorithm<T>
 {
 public:
+    /**
+     * Default parameter constructor for the algorithm.
+     *
+     * @param strategy The way the pivot is chosen when sorting.
+     */
+    explicit QuickSort(QuickSortPivotStrategy strategy = QuickSortPivotStrategy::Last);
+
+    /**
+     * Default getter for the pivot strategy.
+     *
+     * @return Pivot strategy.
+     */
+    [[nodiscard]] QuickSortPivotStrategy getStrategy() const;
+
+    /**
+     * Default setter for the pivot strategy.
+     *
+     * @param strategy New pivot strategy value.
+     */
+    void setStrategy(QuickSortPivotStrategy strategy);
+
     /**
      * This is the method that actually sorts on the vector that is passed.
      *
@@ -73,9 +106,24 @@ private:
      * @return The comparison predicate.
      */
     [[nodiscard]] Lambda<bool(const T&, const T&)> makeComparisonPredicate(SortingOrder order) const;
+
+    // Here we store the strategy
+    QuickSortPivotStrategy m_strategy;
 };
 
 // Implementation
+
+template <Comparable T> QuickSort<T>::QuickSort(QuickSortPivotStrategy strategy) : m_strategy(strategy) {}
+
+template <Comparable T> QuickSortPivotStrategy QuickSort<T>::getStrategy() const
+{
+    return m_strategy;
+}
+
+template <Comparable T> void QuickSort<T>::setStrategy(QuickSortPivotStrategy strategy)
+{
+    m_strategy = strategy;
+}
 
 template <Comparable T> void QuickSort<T>::sort(Vector<T>& vector, SortingOrder order) const
 {
@@ -106,7 +154,7 @@ std::size_t QuickSort<T>::partitionVector(Vector<T>& vector, SortingOrder order,
 {
     // Figure out the initial index of the pivot
     const auto compare = makeComparisonPredicate(order);
-    const auto pivotIndex = end;
+    const auto pivotIndex = decidePivotIndex(start, end);
     const auto pivotValue = vector[pivotIndex];
 
     // Decide the swapping index
@@ -117,14 +165,34 @@ std::size_t QuickSort<T>::partitionVector(Vector<T>& vector, SortingOrder order,
         if (i == pivotIndex)
             continue;
 
+        // If the swapping index is on position to swap the pivot's position, move it further
+        if (swappingIndex == pivotIndex)
+            ++swappingIndex;
+
         // Now check the value
         if (compare(vector[i], pivotValue))
             swap(vector, i, swappingIndex++);
     }
 
     // Swap the first larger valuer value with the pivot
+    swappingIndex -= pivotIndex == start ? 1 : 0;
     swap(vector, swappingIndex, pivotIndex);
     return swappingIndex;
+}
+
+template <Comparable T> std::size_t QuickSort<T>::decidePivotIndex(std::size_t start, std::size_t end) const
+{
+    switch (m_strategy)
+    {
+    case QuickSortPivotStrategy::First:
+        return start;
+    case QuickSortPivotStrategy::Middle:
+        return start + (end - start / 2);
+    case QuickSortPivotStrategy::Last:
+        return end;
+    default:
+        throw std::runtime_error{"QuickSort: Failed to decide on the pivot - Strategy value is not valid."};
+    }
 }
 
 template <Comparable T> void QuickSort<T>::swap(Vector<T>& vector, std::size_t first, std::size_t second) const
