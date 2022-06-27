@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedanti
  -Wno-extra-semi -Wno-exit-time-destructors -Wno-non-virtual-dtor -Wno-suggest-destructor-override \
  -Wno-inconsistent-missing-destructor-override -Wno-global-constructors -Wno-redundant-parens \
  -Wno-zero-as-null-pointer-constant -Wno-zero-length-array -Wno-weak-vtables -Wno-shorten-64-to-32 \
- -Wno-disabled-macro-expansion -Wno-suggest-override")
+ -Wno-disabled-macro-expansion -Wno-suggest-override -Wno-unused-parameter")
 
 # Obtain the dependencies
 include(FetchContent)
@@ -38,7 +38,8 @@ if (NOT FakeIt_POPULATED)
 endif ()
 
 # Collect the tests files
-set(TESTS_FILE_LIST test-cases/QuickSortTesting.cpp)
+set(TESTS_FILE_LIST test-cases/QuickSortTesting.cpp
+        test-cases/TypeTest.cpp)
 
 # Make the tests executable
 add_executable(${PROJECT_NAME})

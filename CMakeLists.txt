@@ -39,7 +39,7 @@ option(ENABLE_INSTALL "Whether to enable the install target, and CPack settings 
 # Set the standard and the build flags
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors \
- -Wno-c++98-compat")
+ -Wno-c++98-compat -Wno-unused-parameter -Wno-deprecated-copy-with-user-provided-copy -Wno-dtor-name")
 
 # Adding the dependencies
 include(cmake/dependencies.cmake)
@@ -52,12 +52,14 @@ else ()
 endif ()
 
 # Collect all the files
-set(SOURCE_FILE_LIST descendants/Placeholder.cpp)
+set(SOURCE_FILE_LIST descendants/database/DatabaseObject.cpp)
 set(HEADER_FILE_LIST descendants/Types.h
         descendants/Version.h
         descendants/algorithms/ComparableObject.h
         descendants/algorithms/sorts/SortingAlgorithm.h
         descendants/algorithms/sorts/QuickSort.h
+        descendants/database/DatabaseObject.h
+        descendants/parsers/JsonParser.h
         descendants/printing/ArrayPrinter.h
         descendants/printing/ObjectArrayPrinter.h
         descendants/printing/Printable.h)
@@ -65,9 +67,11 @@ set(HEADER_FILE_LIST descendants/Types.h
 # Build the library
 add_library(${PROJECT_NAME} ${LIB_TYPE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC plog::plog)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_BINARY_DIR}/include)
+target_link_libraries(${PROJECT_NAME} PUBLIC plog::plog rttr_core)
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_FILE_LIST})
 target_sources(${PROJECT_NAME} PUBLIC ${HEADER_FILE_LIST})
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN")
 
 # If tests need to be built
 if (${BUILD_TESTS})

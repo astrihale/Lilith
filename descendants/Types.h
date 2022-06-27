@@ -1,8 +1,10 @@
 #ifndef DESCENDANTS_TYPES_H
 #define DESCENDANTS_TYPES_H
 
+#include <chrono>
 #include <functional>
 #include <map>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -10,6 +12,9 @@
 
 namespace descendants
 {
+// Time type aliases
+using TimePoint = std::chrono::system_clock::time_point;
+
 // Define the alias for strings
 using String = std::string;
 using StringStream = std::stringstream;
@@ -24,6 +29,9 @@ template <typename X, typename Y> using UnorderedMap = std::unordered_map<X, Y>;
 
 // Define the alias for lambdas
 template <typename T> using Lambda = std::function<T>;
+
+// Define the alias for optionals
+template <typename T> using Optional = std::optional<T>;
 }    // namespace descendants
 
 #endif    // DESCENDANTS_TYPES_H
