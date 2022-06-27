@@ -2,33 +2,123 @@
 #include "descendants/parsers/JsonParser.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <map>
+#include <memory>
 #include <plog/Appenders/ConsoleAppender.h>
 #include <plog/Formatters/TxtFormatter.h>
 #include <plog/Log.h>
 #include <plog/Init.h>
 #include <rttr/registration>
+#include <set>
 
 using namespace descendants;
 using namespace descendants::parsers;
 using namespace rttr;
 
+enum class TestEnumeration
+{
+    FirstValue,
+    SecondValue,
+    ThirdValue,
+    FourthValue
+};
+
+struct Point
+{
+    double x;
+    double y;
+};
+
 struct TestObject
 {
-    void TestMethod() {}
-    [[nodiscard]] static std::int32_t TestFunction() { return 1; }
+    explicit TestObject(Point& point) : refPoint(point) {}
 
-    String field;
-    std::int32_t property;
+    Point point;
+    std::unique_ptr<Point> noPoint;
+    std::unique_ptr<Point> uniquePoint;
+    std::shared_ptr<Point> sharedPoint;
+    std::reference_wrapper<Point> refPoint;
+    TestEnumeration testEnumeration;
+    bool b;
+    std::int8_t i8;
+    std::int16_t i16;
+    std::int32_t i32;
+    std::int64_t i64;
+    std::uint8_t u8;
+    std::uint16_t u16;
+    std::uint32_t u32;
+    std::uint64_t u64;
+    signed s;
+    signed int si;
+    signed long sl;
+    signed long int sli;
+    signed long long sll;
+    signed long long int slli;
+    unsigned u;
+    unsigned int ui;
+    unsigned long ul;
+    unsigned long int uli;
+    unsigned long long ull;
+    unsigned long long int ulli;
+    std::float_t sf;
+    float f;
+    std::double_t sd;
+    double d;
+    long double ld;
+    std::vector<std::int32_t> ints;
+    std::int32_t arrayOfInts[3];
+    std::map<std::string, std::int32_t> mapOfInts;
+    std::map<std::int32_t, std::string> mapOfStrings;
+    std::set<std::int32_t> setOfInts;
 };
 
 RTTR_REGISTRATION
 {
+    registration::enumeration<TestEnumeration>("TestEnumeration")(
+      value("FirstValue", TestEnumeration::FirstValue), value("SecondValue", TestEnumeration::SecondValue),
+      value("ThirdValue", TestEnumeration::ThirdValue), value("FourthValue", TestEnumeration::FourthValue));
+
+    registration::class_<Point>("Point").constructor<>().property("x", &Point::x).property("y", &Point::y);
+
     registration::class_<TestObject>("TestObject")
-      .constructor<>()
-      .property("field", &TestObject::field)
-      .property("property", &TestObject::property)
-      .method("TestMethod", &TestObject::TestMethod)
-      .method("TestFunction", &TestObject::TestFunction);
+      .constructor<Point&>()
+      .property("point", &TestObject::point)
+      //      .property("noPoint", &TestObject::noPoint)
+      //      .property("uniquePoint", &TestObject::uniquePoint)
+      .property("sharedPoint", &TestObject::sharedPoint)
+      .property("refPoint", &TestObject::refPoint)
+      .property("testEnumeration", &TestObject::testEnumeration)
+      .property("b", &TestObject::b)
+      .property("i8", &TestObject::i8)
+      .property("i16", &TestObject::i16)
+      .property("i32", &TestObject::i32)
+      .property("i64", &TestObject::i64)
+      .property("u8", &TestObject::u8)
+      .property("u16", &TestObject::u16)
+      .property("u32", &TestObject::u32)
+      .property("u64", &TestObject::u64)
+      .property("s", &TestObject::s)
+      .property("si", &TestObject::si)
+      .property("sl", &TestObject::sl)
+      .property("sli", &TestObject::sli)
+      .property("sll", &TestObject::sll)
+      .property("slli", &TestObject::slli)
+      .property("u", &TestObject::u)
+      .property("ui", &TestObject::ui)
+      .property("ul", &TestObject::ul)
+      .property("uli", &TestObject::uli)
+      .property("ull", &TestObject::ull)
+      .property("ulli", &TestObject::ulli)
+      .property("sf", &TestObject::sf)
+      .property("f", &TestObject::f)
+      .property("sd", &TestObject::sd)
+      .property("d", &TestObject::d)
+      .property("ld", &TestObject::ld)
+      .property("ints", &TestObject::ints)
+      .property("arrayOfInts", &TestObject::arrayOfInts)
+      .property("mapOfInts", &TestObject::mapOfInts)
+      .property("mapOfStrings", &TestObject::mapOfStrings)
+      .property("setOfInts", &TestObject::setOfInts);
 };
 
 TEST_CASE("TypeTests")
@@ -36,10 +126,24 @@ TEST_CASE("TypeTests")
     static auto console = plog::ConsoleAppender<plog::TxtFormatter>();
     plog::init(plog::debug, &console);
 
-    // Try and parse the object
-    auto value = TestObject{};
-    value.property = 33;
-    value.field = "Test Object!";
-    const auto parsed = JsonParser::parseObject(value);
-    PLOG_DEBUG << "Parsed object: '" << parsed << "'.";
+    SECTION("Run sample parse")
+    {
+        // Try and parse the object
+        auto point = Point{10.0, 20.0};
+        auto value = TestObject{point};
+        value.point = {1.23, 4.56};
+        value.ints = {1, 2, 3};
+        //        value.uniquePoint = std::make_unique<Point>(12.34, 45.67);
+        value.sharedPoint = std::make_shared<Point>();
+        value.sharedPoint->x = 1.2;
+        value.sharedPoint->y = 3.4;
+        value.arrayOfInts[0] = 4;
+        value.arrayOfInts[1] = 5;
+        value.arrayOfInts[2] = 6;
+        value.mapOfInts = {{"One", 1}, {"Two", 2}, {"Three", 3}};
+        value.mapOfStrings = {{1, "One"}, {2, "Two"}, {3, "Three"}};
+        value.setOfInts = {7, 8, 9};
+        const auto parsed = JsonParser::parseObject(value);
+        PLOG_DEBUG << "Parsed object: '" << parsed << "'.";
+    }
 }

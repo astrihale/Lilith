@@ -58,7 +58,7 @@ TEST_CASE("QuickSortTesting", "[std::int32_t]")
         {
             algorithm.setStrategy(pair.second);
             algorithm.sort(vector, pair.first);
-            PLOG_DEBUG << ArrayPrinter<std::int32_t>::print(vector, true);
+            //            PLOG_DEBUG << ArrayPrinter<std::int32_t>::print(vector);
             REQUIRE(vector.size() == 7);
             for (auto i = std::size_t{0}; i < 6; ++i)
             {
@@ -97,7 +97,7 @@ TEST_CASE("QuickSortTesting", "[TestObject]")
         {
             algorithm.setStrategy(pair.second);
             algorithm.sort(vector, pair.first);
-            PLOG_DEBUG << ObjectArrayPrinter<TestObject>::print(vector, true);
+            //            PLOG_DEBUG << ObjectArrayPrinter<TestObject>::print(vector);
             REQUIRE(vector.size() == 7);
             for (auto i = std::size_t{0}; i < 6; ++i)
             {
