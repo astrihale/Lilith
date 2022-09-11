@@ -1,5 +1,5 @@
-#ifndef DESCENDANTS_TYPES_H
-#define DESCENDANTS_TYPES_H
+#ifndef LILITH_TYPES_H
+#define LILITH_TYPES_H
 
 #include <chrono>
 #include <functional>
@@ -7,10 +7,11 @@
 #include <optional>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
-namespace descendants
+namespace lilith
 {
 // Time type aliases
 using TimePoint = std::chrono::system_clock::time_point;
@@ -19,7 +20,8 @@ using TimePoint = std::chrono::system_clock::time_point;
 using String = std::string;
 using StringStream = std::stringstream;
 
-// Define an alias for the standard vector
+// Define an alias for the standard linear structures
+template <typename X, typename Y> using Pair = std::pair<X, Y>;
 template <typename T> using Vector = std::vector<T>;
 
 // Define an alias for the standard map
@@ -32,6 +34,6 @@ template <typename T> using Lambda = std::function<T>;
 
 // Define the alias for optionals
 template <typename T> using Optional = std::optional<T>;
-}    // namespace descendants
+}    // namespace lilith
 
-#endif    // DESCENDANTS_TYPES_H
+#endif    // LILITH_TYPES_H

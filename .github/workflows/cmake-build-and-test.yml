@@ -5,6 +5,7 @@ on:
     branches: [ "main", "development**", "release/**" ]
   pull_request:
     branches: [ "main", "development**", "release/**" ]
+  workflow_dispatch:
 
 env:
   BUILD_TYPE: Release

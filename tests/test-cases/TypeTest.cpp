@@ -1,18 +1,15 @@
-#include "descendants/Types.h"
-#include "descendants/parsers/JsonParser.h"
+#include "lilith/Types.h"
+#include "lilith/parsers/json/JsonParser.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <iostream>
 #include <map>
 #include <memory>
-#include <plog/Appenders/ConsoleAppender.h>
-#include <plog/Formatters/TxtFormatter.h>
-#include <plog/Log.h>
-#include <plog/Init.h>
-#include <rttr/registration>
+#include <rttr/registration.h>
 #include <set>
 
-using namespace descendants;
-using namespace descendants::parsers;
+using namespace lilith;
+using namespace lilith::parsers;
 using namespace rttr;
 
 enum class TestEnumeration
@@ -34,8 +31,8 @@ struct TestObject
     explicit TestObject(Point& point) : refPoint(point) {}
 
     Point point;
-    std::unique_ptr<Point> noPoint;
-    std::unique_ptr<Point> uniquePoint;
+    //    std::unique_ptr<Point> noPoint;
+    //    std::unique_ptr<Point> uniquePoint;
     std::shared_ptr<Point> sharedPoint;
     std::reference_wrapper<Point> refPoint;
     TestEnumeration testEnumeration;
@@ -123,9 +120,6 @@ RTTR_REGISTRATION
 
 TEST_CASE("TypeTests")
 {
-    static auto console = plog::ConsoleAppender<plog::TxtFormatter>();
-    plog::init(plog::debug, &console);
-
     SECTION("Run sample parse")
     {
         // Try and parse the object
@@ -143,7 +137,14 @@ TEST_CASE("TypeTests")
         value.mapOfInts = {{"One", 1}, {"Two", 2}, {"Three", 3}};
         value.mapOfStrings = {{1, "One"}, {2, "Two"}, {3, "Three"}};
         value.setOfInts = {7, 8, 9};
-        const auto parsed = JsonParser::parseObject(value);
-        PLOG_DEBUG << "Parsed object: '" << parsed << "'.";
+        const auto parsed = json::JsonParser::parseObject(value);
+        std::cout << parsed.dump() << std::endl;
+    }
+
+    SECTION("Parse a tuple")
+    {
+        const auto tuple = std::tuple<std::string, std::uint64_t>{"TestValue", 123};
+        const auto parsed = json::JsonParser::parseTuple(tuple);
+        std::cout << parsed.dump() << std::endl;
     }
 }
