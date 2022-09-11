@@ -30,10 +30,18 @@ public:
     template <typename T> static nlohmann::json parseObject(const T& data);
 
     /**
+     * This is the method that allows the user to parse a pair value.
+     *
+     * @param pair The value.
+     * @return The parsed values as a json representation.
+     */
+    template <typename A, typename B> static nlohmann::json parsePair(const std::pair<A, B>& pair);
+
+    /**
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A> static nlohmann::json parseTuple(const std::tuple<A>& tuple);
 
@@ -41,7 +49,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B> static nlohmann::json parseTuple(const std::tuple<A, B>& tuple);
 
@@ -49,7 +57,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C> static nlohmann::json parseTuple(const std::tuple<A, B, C>& tuple);
 
@@ -57,7 +65,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D>
     static nlohmann::json parseTuple(const std::tuple<A, B, C, D>& tuple);
@@ -66,7 +74,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E>
     static nlohmann::json parseTuple(const std::tuple<A, B, C, D, E>& tuple);
@@ -75,7 +83,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E, typename F>
     static nlohmann::json parseTuple(const std::tuple<A, B, C, D, E, F>& tuple);
@@ -84,7 +92,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E, typename F, typename G>
     static nlohmann::json parseTuple(const std::tuple<A, B, C, D, E, F, G>& tuple);
@@ -93,7 +101,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
     static nlohmann::json parseTuple(const std::tuple<A, B, C, D, E, F, G, H>& tuple);
@@ -102,7 +110,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H,
               typename I>
@@ -112,7 +120,7 @@ public:
      * This is the method that allows the user to parse a tuple value.
      *
      * @param tuple The value.
-     * @return The parse values as a json representation.
+     * @return The parsed values as a json representation.
      */
     template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H,
               typename I, typename J>
@@ -182,6 +190,11 @@ template <typename T> nlohmann::json JsonParser::parseObject(const T& data)
 {
     // Check whether the RTTR contains data on the object.
     return type::get(data).is_valid() ? parseField(variant{data}) : nlohmann::json{};
+}
+
+template <typename A, typename B> nlohmann::json JsonParser::parsePair(const std::pair<A, B>& pair)
+{
+    return nlohmann::json{parseField(std::get<0>(pair), std::get<1>(pair))};
 }
 
 template <typename A> nlohmann::json JsonParser::parseTuple(const std::tuple<A>& tuple)
