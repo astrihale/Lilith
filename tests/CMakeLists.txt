@@ -13,9 +13,26 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedanti
  -Wno-disabled-macro-expansion -Wno-suggest-override -Wno-unused-parameter")
 
 # Catch2
-find_package(Catch2 REQUIRED)
+find_package(Catch2)
+if (NOT Catch2_FOUND)
+    FetchContent_Declare(
+            Catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2
+            GIT_TAG v3.0.1
+    )
+    FetchContent_MakeAvailable(Catch2)
+endif ()
+
 # FakeIt
-find_package(FakeIt REQUIRED)
+find_package(FakeIt)
+if (NOT FakeIt_FOUND)
+    FetchContent_Declare(
+            FakeIt
+            GIT_REPOSITORY https://github.com/libenike/FakeIt
+            GIT_TAG feature/add_cmake_support
+    )
+    FetchContent_MakeAvailable(FakeIt)
+endif ()
 
 # Collect the tests files
 set(TESTS_FILE_LIST test-cases/TypeTest.cpp)
