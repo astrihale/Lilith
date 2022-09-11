@@ -43,6 +43,7 @@ else ()
 endif ()
 option(BUILD_SHARED "Build the main library as a shared library." ON)
 option(BUILD_TESTS "Build the tests and require testing dependencies." ${BUILD_DEBUG})
+option(BUILD_EXAMPLES "Build the examples." ${BUILD_DEBUG})
 option(BUILD_DEFAULT_LOGGER "Build the default logger implementation." ${ROOT_PROJECT})
 option(ENABLE_INSTALL "Whether to enable the install target, and CPack settings for this package." ${BUILD_RELEASE})
 if (${BUILD_DEFAULT_LOGGER})
@@ -91,6 +92,11 @@ add_dependencies(${PROJECT_NAME} msgpack nlohmann rttr)
 # If tests need to be built
 if (${BUILD_TESTS})
     add_subdirectory(tests)
+endif ()
+
+# If examples need to be built
+if (${BUILD_EXAMPLES})
+    add_subdirectory(examples)
 endif ()
 
 # Enable CPack

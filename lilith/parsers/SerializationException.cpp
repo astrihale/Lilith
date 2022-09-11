@@ -10,8 +10,10 @@ String toString(SerializationError error)
         return "An argument has an invalid value.";
     case SerializationError::InvalidType:
         return "A value is of an invalid type.";
+    case SerializationError::ErrorWhileParsing:
+        return "An error has occurred while parsing a value.";
     default:
-        return {};
+        return "An unknown error has occurred.";
     }
 }
 

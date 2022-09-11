@@ -1,4 +1,5 @@
 #include "lilith/Types.h"
+#include "lilith/parsers/json/JsonDeserializer.h"
 #include "lilith/parsers/json/JsonSerializer.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -20,10 +21,17 @@ enum class TestEnumeration
     FourthValue
 };
 
-struct Point
+class Point
 {
+public:
     double x;
     double y;
+};
+
+class TextObject
+{
+public:
+    std::string text;
 };
 
 struct TestObject
@@ -146,5 +154,48 @@ TEST_CASE("TypeTests")
         const auto tuple = std::tuple<std::string, std::uint64_t>{"TestValue", 123};
         const auto parsed = json::JsonSerializer::parseTuple(tuple);
         std::cout << parsed.dump() << std::endl;
+    }
+
+    SECTION("Deserialize a string")
+    {
+        const auto string = json::JsonDeserializer::parseObject<std::string>(nlohmann::json::parse("\"HelloWorld!\""));
+        REQUIRE(string.has_value());
+        REQUIRE(string.value() == "HelloWorld!");
+        std::cout << string.value() << std::endl;
+    }
+
+    SECTION("Deserialize the point")
+    {
+        const auto point = json::JsonDeserializer::parseObject<Point>(nlohmann::json::parse(R"({"x":1.0,"y":2.0})"));
+        REQUIRE(point.has_value());
+        const auto& pointValue = point.value();
+        //        REQUIRE(pointValue.x == 1.0);
+        //        REQUIRE(pointValue.y == 2.0);
+        std::cout << "X: " << pointValue.x << " Y: " << pointValue.y << std::endl;
+    }
+
+    SECTION("Deserialize the text")
+    {
+        const auto textJson = nlohmann::json::parse(R"({"text":"HelloWorld!"})");
+        const auto textOpt = json::JsonDeserializer::parseObject<TextObject>(textJson);
+        REQUIRE(textOpt.has_value());
+        const auto text = textOpt.value();
+        REQUIRE(text.text == "HelloWorld!");
+    }
+
+    SECTION("Try this manually")
+    {
+        const auto type = rttr::type::get<Point>();
+        auto value = type.create();
+
+        const auto x = type.get_property("x");
+        REQUIRE(x.set_value(value, 3.0));
+
+        auto point = value.get_value<Point>();
+        std::cout << "Point:" << std::endl;
+        std::cout << "\tX = " << point.x << std::endl;
+        std::cout << "\tY = " << point.y << std::endl;
+        REQUIRE(point.x == 3.0);
+        REQUIRE(point.y == 0.0);
     }
 }
