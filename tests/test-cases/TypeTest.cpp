@@ -1,5 +1,5 @@
 #include "lilith/Types.h"
-#include "lilith/parsers/json/JsonParser.h"
+#include "lilith/parsers/json/JsonSerializer.h"
 
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
@@ -137,14 +137,14 @@ TEST_CASE("TypeTests")
         value.mapOfInts = {{"One", 1}, {"Two", 2}, {"Three", 3}};
         value.mapOfStrings = {{1, "One"}, {2, "Two"}, {3, "Three"}};
         value.setOfInts = {7, 8, 9};
-        const auto parsed = json::JsonParser::parseObject(value);
+        const auto parsed = json::JsonSerializer::parseObject(value);
         std::cout << parsed.dump() << std::endl;
     }
 
     SECTION("Parse a tuple")
     {
         const auto tuple = std::tuple<std::string, std::uint64_t>{"TestValue", 123};
-        const auto parsed = json::JsonParser::parseTuple(tuple);
+        const auto parsed = json::JsonSerializer::parseTuple(tuple);
         std::cout << parsed.dump() << std::endl;
     }
 }

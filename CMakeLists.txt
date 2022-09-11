@@ -65,13 +65,15 @@ else ()
 endif ()
 
 # Collect all the files
-set(SOURCE_FILE_LIST lilith/parsers/json/JsonParser.cpp
+set(SOURCE_FILE_LIST lilith/parsers/json/JsonSerializer.cpp
+        lilith/parsers/json/JsonDeserializer.cpp
         lilith/parsers/msgpack/MsgPackParser.cpp
         lilith/parsers/SerializationException.cpp)
 set(HEADER_FILE_LIST lilith/Types.h
         lilith/Version.h
         lilith/parsers/SerializationException.h
-        lilith/parsers/json/JsonParser.h
+        lilith/parsers/json/JsonSerializer.h
+        lilith/parsers/json/JsonDeserializer.h
         lilith/parsers/msgpack/MsgPackParser.h)
 
 # Build the library

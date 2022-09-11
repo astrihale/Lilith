@@ -1,11 +1,10 @@
-#include "lilith/parsers/json/JsonParser.h"
+#include "lilith/parsers/json/JsonSerializer.h"
 
-#include <rttg-0.0.1/rttg/rttg.h>
 #include <sstream>
 
 namespace lilith::parsers::json
 {
-nlohmann::json JsonParser::parseField(const variant& variant)
+nlohmann::json JsonSerializer::parseField(const variant& variant)
 {
     const auto& type = variant.get_type();
     if (!type.is_valid())
@@ -27,7 +26,7 @@ nlohmann::json JsonParser::parseField(const variant& variant)
     return nlohmann::json{};
 }
 
-nlohmann::json JsonParser::parseArithmeticalField(const variant& variant)
+nlohmann::json JsonSerializer::parseArithmeticalField(const variant& variant)
 {
     const auto& typeName = variant.get_type().get_name().to_string();
     if (typeName == "bool")
@@ -53,7 +52,7 @@ nlohmann::json JsonParser::parseArithmeticalField(const variant& variant)
     return variant.to_uint64();
 }
 
-nlohmann::json JsonParser::parseAssociativeContainerField(const variant& variant)
+nlohmann::json JsonSerializer::parseAssociativeContainerField(const variant& variant)
 {
     const auto& typeName = variant.get_type().get_name().to_string();
     if (typeName.find("set") != std::string::npos)
@@ -75,7 +74,7 @@ nlohmann::json JsonParser::parseAssociativeContainerField(const variant& variant
     return nlohmann::json{};
 }
 
-nlohmann::json JsonParser::parseArrayField(const variant& variant)
+nlohmann::json JsonSerializer::parseArrayField(const variant& variant)
 {
     // Take the array
     auto array = nlohmann::json::array();
@@ -84,7 +83,7 @@ nlohmann::json JsonParser::parseArrayField(const variant& variant)
     return array;
 }
 
-nlohmann::json JsonParser::parseClassField(const variant& variant)
+nlohmann::json JsonSerializer::parseClassField(const variant& variant)
 {
     // Take the info about the type
     const auto& type = variant.get_type();
@@ -94,13 +93,13 @@ nlohmann::json JsonParser::parseClassField(const variant& variant)
     return object;
 }
 
-nlohmann::json JsonParser::parseEnumerationField(const variant& variant)
+nlohmann::json JsonSerializer::parseEnumerationField(const variant& variant)
 {
     // Take the enumeration type
     return variant.to_string();
 }
 
-nlohmann::json JsonParser::parseWrapperField(const variant& variant)
+nlohmann::json JsonSerializer::parseWrapperField(const variant& variant)
 {
     // Extract the wrapped value
     return parseField(variant.extract_wrapped_value());

@@ -1,5 +1,5 @@
-#ifndef LILITH_JSONPARSER_H
-#define LILITH_JSONPARSER_H
+#ifndef LILITH_JSONSERIALIZER_H
+#define LILITH_JSONSERIALIZER_H
 
 #include "lilith/Types.h"
 
@@ -16,7 +16,7 @@ namespace lilith::parsers::json
  * This is the class that parses values using the reflection library.
  * This specific implementation is used to parse values into JSON.
  */
-class JsonParser
+class JsonSerializer
 {
 public:
     /**
@@ -186,42 +186,43 @@ private:
     static nlohmann::json parseWrapperField(const variant& variant);
 };
 
-template <typename T> nlohmann::json JsonParser::parseObject(const T& data)
+template <typename T> nlohmann::json JsonSerializer::parseObject(const T& data)
 {
     // Check whether the RTTR contains data on the object.
     return type::get(data).is_valid() ? parseField(variant{data}) : nlohmann::json{};
 }
 
-template <typename A, typename B> nlohmann::json JsonParser::parsePair(const std::pair<A, B>& pair)
+template <typename A, typename B> nlohmann::json JsonSerializer::parsePair(const std::pair<A, B>& pair)
 {
     return nlohmann::json{parseField(std::get<0>(pair), std::get<1>(pair))};
 }
 
-template <typename A> nlohmann::json JsonParser::parseTuple(const std::tuple<A>& tuple)
+template <typename A> nlohmann::json JsonSerializer::parseTuple(const std::tuple<A>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple))};
 }
 
-template <typename A, typename B> nlohmann::json JsonParser::parseTuple(const std::tuple<A, B>& tuple)
+template <typename A, typename B> nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple))};
 }
 
-template <typename A, typename B, typename C> nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C>& tuple)
+template <typename A, typename B, typename C>
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple))};
 }
 
 template <typename A, typename B, typename C, typename D>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple))};
 }
 
 template <typename A, typename B, typename C, typename D, typename E>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple)),
@@ -229,7 +230,7 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E>& tuple)
 }
 
 template <typename A, typename B, typename C, typename D, typename E, typename F>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E, F>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple)),
@@ -237,7 +238,7 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F>& tuple)
 }
 
 template <typename A, typename B, typename C, typename D, typename E, typename F, typename G>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E, F, G>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple)),
@@ -246,7 +247,7 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G>& tup
 }
 
 template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E, F, G, H>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple)),
@@ -255,7 +256,7 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H>& 
 }
 
 template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I>& tuple)
 {
     return nlohmann::json{
       parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)), parseField(std::get<2>(tuple)),
@@ -265,7 +266,7 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I
 
 template <typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H, typename I,
           typename J>
-nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I, J>& tuple)
+nlohmann::json JsonSerializer::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I, J>& tuple)
 {
     return nlohmann::json{parseField(std::get<0>(tuple)), parseField(std::get<1>(tuple)),
                           parseField(std::get<2>(tuple)), parseField(std::get<3>(tuple)),
@@ -275,4 +276,4 @@ nlohmann::json JsonParser::parseTuple(const std::tuple<A, B, C, D, E, F, G, H, I
 }
 }    // namespace lilith::parsers::json
 
-#endif    // LILITH_JSONPARSER_H
+#endif    // LILITH_JSONSERIALIZER_H
