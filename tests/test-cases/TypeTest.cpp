@@ -149,13 +149,6 @@ TEST_CASE("TypeTests")
         std::cout << parsed.dump() << std::endl;
     }
 
-    SECTION("Parse a tuple")
-    {
-        const auto tuple = std::tuple<std::string, std::uint64_t>{"TestValue", 123};
-        const auto parsed = json::JsonSerializer::parseTuple(tuple);
-        std::cout << parsed.dump() << std::endl;
-    }
-
     SECTION("Deserialize a string")
     {
         const auto string = json::JsonDeserializer::parseObject<std::string>(nlohmann::json::parse("\"HelloWorld!\""));

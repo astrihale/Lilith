@@ -1,8 +1,9 @@
 #include "lilith/parsers/json/JsonDeserializer.h"
 #include "lilith/parsers/json/JsonSerializer.h"
+#include "lilith/Pair.h"
+#include "lilith/Tuple.h"
 
 #include <iostream>
-#include <string>
 #include <vector>
 
 enum class TestEnumeration
@@ -40,6 +41,15 @@ RTTR_REGISTRATION
     registration::class_<std::array<std::int32_t, 3>>("std::array<std::int32_t, 3>").constructor();
     registration::class_<std::vector<std::int32_t>>("std::vector<std::int32_t>").constructor<std::size_t>();
     registration::class_<std::map<std::string, std::int32_t>>("std::map<std::string, std::int32_t>>").constructor();
+
+    registration::class_<lilith::Pair<std::string, std::uint64_t>>("lilith::Pair<std::string, std::uint64_t>")
+      .constructor<std::vector<variant>>()
+      .property("variants", &lilith::Pair<std::string, std::uint64_t>::variants);
+
+    registration::class_<lilith::Tuple<std::string, std::uint64_t, std::string>>(
+      "lilith::Tuple<std::string, std::uint64_t, std::string>")
+      .constructor<std::vector<variant>>()
+      .property("variants", &lilith::Tuple<std::string, std::uint64_t, std::string>::variants);
 
     registration::class_<TextObject>("TextObject")
       .constructor()
@@ -131,6 +141,37 @@ void MapExample()
     std::cout << "Map as json: " << outputJson.dump() << std::endl;
 }
 
+void PairExample()
+{
+    const auto inputJson = nlohmann::json::parse(R"(["TestString", 623])");
+    auto lilithPair =
+      lilith::parsers::json::JsonDeserializer::parseObject<lilith::Pair<std::string, std::uint64_t>>(inputJson);
+    auto pair = lilithPair.asStdPair();
+    std::cout << "Pair as value: " << std::endl;
+    std::cout << "\tFirst = " << pair.first << std::endl;
+    std::cout << "\tSecond = " << pair.second << std::endl;
+
+    const auto outputJson = lilith::parsers::json::JsonSerializer::parseObject(lilithPair);
+    std::cout << "Pair as json: " << outputJson.dump() << std::endl;
+}
+
+void TupleExample()
+{
+    const auto inputJson = nlohmann::json::parse(R"(["TestString", 623, "KeyHahaha"])");
+    auto lilithTuple =
+      lilith::parsers::json::JsonDeserializer::parseObject<lilith::Tuple<std::string, std::uint64_t, std::string>>(
+        inputJson);
+    auto tuple = std::make_tuple(lilithTuple.get<std::string>(0), lilithTuple.get<std::uint64_t>(1),
+                                 lilithTuple.get<std::string>(2));
+    std::cout << "Tuple as value: " << std::endl;
+    std::cout << "\tFirst = " << std::get<0>(tuple) << std::endl;
+    std::cout << "\tSecond = " << std::get<1>(tuple) << std::endl;
+    std::cout << "\tThird = " << std::get<2>(tuple) << std::endl;
+
+    const auto outputJson = lilith::parsers::json::JsonSerializer::parseObject(lilithTuple);
+    std::cout << "Tuple as json: " << outputJson.dump() << std::endl;
+}
+
 int main()
 {
     NumberExample();
@@ -140,5 +181,7 @@ int main()
     ArrayExample();
     VectorExample();
     MapExample();
+    PairExample();
+    TupleExample();
     return 0;
 }

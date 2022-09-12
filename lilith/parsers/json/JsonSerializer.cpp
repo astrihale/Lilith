@@ -21,6 +21,9 @@ nlohmann::json JsonSerializer::parseField(const variant& variant)
         return parseWrapperField(variant);
     else if (type.get_name().to_string().find("std::string") == 0)
         return variant.to_string();
+    else if (type.get_name().to_string().find("lilith::Pair") == 0 ||
+             type.get_name().to_string().find("lilith::Tuple") == 0)
+        return parseTuplelike(variant);
     else if (type.is_class())
         return parseClassField(variant);
     return nlohmann::json{};
@@ -91,6 +94,18 @@ nlohmann::json JsonSerializer::parseClassField(const variant& variant)
     for (const auto& property : type.get_properties())
         object[property.get_name().to_string()] = parseField(property.get_value(variant));
     return object;
+}
+
+nlohmann::json JsonSerializer::parseTuplelike(const rttr::variant& tupleVariant)
+{
+    const auto variants = tupleVariant.get_type()
+                            .get_property("variants")
+                            .get_value(tupleVariant)
+                            .get_wrapped_value<std::vector<variant>>();
+    auto array = nlohmann::json{};
+    for (const auto& variant : variants)
+        array += parseField(variant);
+    return array;
 }
 
 nlohmann::json JsonSerializer::parseEnumerationField(const variant& variant)

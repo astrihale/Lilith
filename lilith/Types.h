@@ -21,7 +21,6 @@ using String = std::string;
 using StringStream = std::stringstream;
 
 // Define an alias for the standard linear structures
-template <typename X, typename Y> using Pair = std::pair<X, Y>;
 template <typename T> using Vector = std::vector<T>;
 
 // Define an alias for the standard map

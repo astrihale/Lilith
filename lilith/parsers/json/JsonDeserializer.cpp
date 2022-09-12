@@ -20,6 +20,9 @@ variant JsonDeserializer::parseField(const rttr::type& type, const nlohmann::jso
         return parseWrapperField(type, json);
     else if (type.get_name().to_string().find("std::string") == 0)
         return json.get<std::string>();
+    else if (type.get_name().to_string().find("lilith::Pair") == 0 ||
+             type.get_name().to_string().find("lilith::Tuple") == 0)
+        return parseTuplelike(type, json);
     else if (type.is_class())
         return parseClassField(type, json);
     throw SerializationException(SerializationError::InvalidType);
@@ -98,6 +101,20 @@ variant JsonDeserializer::parseClassField(const rttr::type& type, const nlohmann
     for (const auto& property : type.get_properties())
         if (!property.set_value(value, parseField(property.get_type(), json[property.get_name()])))
             throw SerializationException{SerializationError::InvalidArgument};
+    return value;
+}
+
+variant JsonDeserializer::parseTuplelike(const rttr::type& type, const nlohmann::json& json)
+{
+    auto variants = std::vector<variant>{};
+
+    auto currentType = type.get_template_arguments().begin();
+    for (const auto& item : json.items())
+        variants.emplace_back(parseField(*(currentType++), item.value()));
+
+    auto value = type.create({variants});
+    if (!value.is_valid())
+        throw SerializationException{SerializationError::UnregisteredType};
     return value;
 }
 

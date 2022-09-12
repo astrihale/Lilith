@@ -28,6 +28,8 @@ private:
 
     static variant parseArrayField(const rttr::type& type, const nlohmann::json& json);
 
+    static variant parseTuplelike(const rttr::type& type, const nlohmann::json& json);
+
     static variant parseClassField(const rttr::type& type, const nlohmann::json& json);
 
     static variant parseEnumerationField(const rttr::type& type, const nlohmann::json& json);
