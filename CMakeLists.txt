@@ -9,37 +9,37 @@ set(LILITH_PATCH_VERSION 0)
 set(LILITH_VERSION_SUFFIX "alpha")
 set(LILITH_VERSION "${LILITH_MAJOR_VERSION}.${LILITH_MINOR_VERSION}.${LILITH_PATCH_VERSION}")
 if (NOT ${LILITH_VERSION_SUFFIX} STREQUAL "")
-    set(LILITH_VERSION "${LILITH_VERSION}-${LILITH_VERSION_SUFFIX}")
+	set(LILITH_VERSION "${LILITH_VERSION}-${LILITH_VERSION_SUFFIX}")
 endif ()
 configure_file(generate/Version.in ${PROJECT_SOURCE_DIR}/lilith/Version.h)
 
 # Set the paths that are used through out the project
 if (NOT SET ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif ()
 if (NOT SET ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif ()
 if (NOT SET ${CMAKE_PREFIX_PATH})
-    set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/build)
+	set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/build)
 endif ()
 link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 # Define the options that should affect the library
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    set(BUILD_DEBUG ON)
+	set(BUILD_DEBUG ON)
 else ()
-    set(BUILD_DEBUG OFF)
+	set(BUILD_DEBUG OFF)
 endif ()
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-    set(BUILD_RELEASE ON)
+	set(BUILD_RELEASE ON)
 else ()
-    set(BUILD_RELEASE OFF)
+	set(BUILD_RELEASE OFF)
 endif ()
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
-    set(ROOT_PROJECT ON)
+	set(ROOT_PROJECT ON)
 else ()
-    set(ROOT_PROJECT OFF)
+	set(ROOT_PROJECT OFF)
 endif ()
 option(BUILD_SHARED "Build the main library as a shared library." ON)
 option(BUILD_TESTS "Build the tests and require testing dependencies." ${BUILD_DEBUG})
@@ -47,37 +47,36 @@ option(BUILD_EXAMPLES "Build the examples." ${BUILD_DEBUG})
 option(BUILD_DEFAULT_LOGGER "Build the default logger implementation." ${ROOT_PROJECT})
 option(ENABLE_INSTALL "Whether to enable the install target, and CPack settings for this package." ${BUILD_RELEASE})
 if (${BUILD_DEFAULT_LOGGER})
-    add_compile_definitions(DEFAULT_LOGGER)
+	add_compile_definitions(DEFAULT_LOGGER)
 endif ()
 
 # Set the standard and the build flags
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wall -Werror -Wextra -pedantic -pedantic-errors \
- -Wno-c++98-compat -Wno-unused-parameter -Wno-deprecated-copy-with-user-provided-copy -Wno-dtor-name")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 # Adding the dependencies
 include(cmake/dependencies.cmake)
 
 # Decide the library type
 if (${BUILD_SHARED})
-    set(LIB_TYPE SHARED)
+	set(LIB_TYPE SHARED)
 else ()
-    set(LIB_TYPE STATIC)
+	set(LIB_TYPE STATIC)
 endif ()
 
 # Collect all the files
 set(SOURCE_FILE_LIST lilith/parsers/json/JsonSerializer.cpp
-        lilith/parsers/json/JsonDeserializer.cpp
-        lilith/parsers/msgpack/MsgPackParser.cpp
-        lilith/parsers/SerializationException.cpp)
+	lilith/parsers/json/JsonDeserializer.cpp
+	lilith/parsers/msgpack/MsgPackParser.cpp
+	lilith/parsers/SerializationException.cpp)
 set(HEADER_FILE_LIST lilith/Pair.h
-        lilith/Tuple.h
-        lilith/Types.h
-        lilith/Version.h
-        lilith/parsers/SerializationException.h
-        lilith/parsers/json/JsonSerializer.h
-        lilith/parsers/json/JsonDeserializer.h
-        lilith/parsers/msgpack/MsgPackParser.h)
+	lilith/Tuple.h
+	lilith/Types.h
+	lilith/Version.h
+	lilith/parsers/SerializationException.h
+	lilith/parsers/json/JsonSerializer.h
+	lilith/parsers/json/JsonDeserializer.h
+	lilith/parsers/msgpack/MsgPackParser.h)
 
 # Build the library
 add_library(${PROJECT_NAME} ${LIB_TYPE})
@@ -93,16 +92,16 @@ add_dependencies(${PROJECT_NAME} msgpack nlohmann rttr)
 
 # If tests need to be built
 if (${BUILD_TESTS})
-    add_subdirectory(tests)
+	add_subdirectory(tests)
 endif ()
 
 # If examples need to be built
 if (${BUILD_EXAMPLES})
-    add_subdirectory(examples)
+	add_subdirectory(examples)
 endif ()
 
 # Enable CPack
 if (${ENABLE_INSTALL})
-    include(cmake/install.cmake)
-    include(cmake/cpack.cmake)
+	include(cmake/install.cmake)
+	include(cmake/cpack.cmake)
 endif ()

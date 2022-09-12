@@ -123,11 +123,9 @@ variant JsonDeserializer::parseClassField(const rttr::type& type, const nlohmann
 variant JsonDeserializer::parseTuplelike(const rttr::type& type, const nlohmann::json& json)
 {
     auto variants = std::vector<variant>{};
-
     auto currentType = type.get_template_arguments().begin();
     for (const auto& item : json.items())
         variants.emplace_back(parseField(*(currentType++), item.value()));
-
     auto value = type.create({variants});
     if (!value.is_valid())
         throw SerializationException{SerializationError::UnregisteredType};

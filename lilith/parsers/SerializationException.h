@@ -69,7 +69,7 @@ public:
      *
      * @return The error message.
      */
-    [[nodiscard]] const char* what() const _NOEXCEPT override;
+    [[nodiscard]] const char* what() const noexcept override;
 
 private:
     // Make the exception prefix

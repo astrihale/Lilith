@@ -47,10 +47,10 @@ RTTR_REGISTRATION
       .constructor<std::vector<variant>>()
       .property("variants", &lilith::Pair<std::string, std::uint64_t>::variants);
 
-    registration::class_<lilith::Tuple<std::string, std::uint64_t, std::string>>(
-      "lilith::Tuple<std::string, std::uint64_t, std::string>")
+    registration::class_<lilith::Tuple<std::string, std::uint64_t, bool>>(
+      "lilith::Tuple<std::string, std::uint64_t, bool>")
       .constructor<std::vector<variant>>()
-      .property("variants", &lilith::Tuple<std::string, std::uint64_t, std::string>::variants);
+      .property("variants", &lilith::Tuple<std::string, std::uint64_t, bool>::variants);
 
     registration::class_<TextObject>("TextObject")
       .constructor()
@@ -170,12 +170,11 @@ void PairExample()
 
 void TupleExample()
 {
-    const auto inputJson = nlohmann::json::parse(R"(["TestString", 623, "KeyHahaha"])");
+    const auto inputJson = nlohmann::json::parse(R"(["TestString", 623, false])");
     auto lilithTuple =
-      lilith::parsers::json::JsonDeserializer::parseObject<lilith::Tuple<std::string, std::uint64_t, std::string>>(
-        inputJson);
-    auto tuple = std::make_tuple(lilithTuple.get<std::string>(0), lilithTuple.get<std::uint64_t>(1),
-                                 lilithTuple.get<std::string>(2));
+      lilith::parsers::json::JsonDeserializer::parseObject<lilith::Tuple<std::string, std::uint64_t, bool>>(inputJson);
+    auto tuple =
+      std::make_tuple(lilithTuple.get<std::string>(0), lilithTuple.get<std::uint64_t>(1), lilithTuple.get<bool>(2));
     std::cout << "Tuple as value: " << std::endl;
     std::cout << "\tFirst = " << std::get<0>(tuple) << std::endl;
     std::cout << "\tSecond = " << std::get<1>(tuple) << std::endl;

@@ -14,21 +14,22 @@ namespace lilith
 template <typename... Types> class Tuple
 {
 public:
-    Tuple(const std::tuple<Types...>& tuple)
+    explicit Tuple(const std::tuple<Types...>& tuple) : variants{}
     {
         for (auto i = std::size_t{0}; i < std::tuple_size(tuple); ++i)
             variants.template emplace_back(std::get<i>(tuple));
     }
 
-    Tuple(std::vector<variant> variants) : variants{std::move(variants)} {}
-
-    template <std::size_t i, typename... TypeList> decltype(auto) getType(TypeList... types)
+    explicit Tuple(const std::vector<variant>& vector) : variants{}
     {
-        return std::get<i>(std::forward_as_tuple(types...));
+        for (const auto& variant : vector)
+            variants.template emplace_back(variant);
     }
 
     template <typename T> [[nodiscard]] T get(std::size_t index)
     {
+        if (index >= variants.size())
+            throw std::runtime_error("Invalid index.");
         return variants[index].template get_wrapped_value<T>();
     }
 
