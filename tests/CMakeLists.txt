@@ -13,10 +13,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wall -Werro
  -Wno-disabled-macro-expansion -Wno-suggest-override -Wno-unused-parameter")
 
 # Catch2
-find_package(Catch2)
 if (NOT TARGET Catch2)
     ExternalProject_Add(
-            Catch2
+            Catch2_TestSuite
             GIT_REPOSITORY https://github.com/catchorg/Catch2
             GIT_TAG v3.0.1
             CMAKE_ARGS
@@ -28,10 +27,9 @@ if (NOT TARGET Catch2)
 endif ()
 
 # FakeIt
-find_package(FakeIt)
 if (NOT TARGET FakeIt)
     ExternalProject_Add(
-            FakeIt
+            FakeIt_MockSuite
             GIT_REPOSITORY https://github.com/libenike/FakeIt
             GIT_TAG feature/add_cmake_support
             CMAKE_ARGS
@@ -45,8 +43,8 @@ set(TESTS_FILE_LIST test-cases/TypeTest.cpp)
 # Make the tests executable
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE ${TESTS_FILE_LIST})
-target_link_libraries(${PROJECT_NAME} PRIVATE FakeIt::FakeIt Catch2::Catch2WithMain Lilith)
+target_link_libraries(${PROJECT_NAME} PRIVATE Catch2 Catch2Main Lilith)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_BINARY_DIR}/include ${CMAKE_PREFIX_PATH}/include)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
-add_dependencies(${PROJECT_NAME} Catch2 FakeIt)
+add_dependencies(${PROJECT_NAME} Catch2_TestSuite FakeIt_MockSuite)
