@@ -53,22 +53,48 @@ variant JsonDeserializer::parseArithmeticalField(const rttr::type& type, const n
 
 variant JsonDeserializer::parseAssociativeContainerField(const rttr::type& type, const nlohmann::json& json)
 {
-    throw SerializationException(SerializationError::InvalidArgument);
+    const auto typeName = type.get_name().to_string();
+    const auto keyType = *type.get_template_arguments().begin();
+    const auto valueType = *(++type.get_template_arguments().begin());
+    auto map = type.create();
+    if (!map.is_valid())
+        throw SerializationException{SerializationError::UnregisteredType};
+    auto view = map.create_associative_view();
+    for (const auto& item : json.items())
+        view.insert(parseField(keyType,
+                               [&]
+                               {
+                                   if (keyType.get_name().to_string().find("std::string") == 0)
+                                       return nlohmann::json::parse('"' + item.key() + '"');
+                                   return nlohmann::json::parse(item.key());
+                               }()),
+                    parseField(valueType, item.value()));
+    return map;
 }
 
 variant JsonDeserializer::parseArrayField(const rttr::type& type, const nlohmann::json& json)
 {
-    const auto parameters = type.get_template_arguments();
-    for (const auto& parameter : parameters)
-        std::cout << parameter.get_name() << std::endl;
-    throw SerializationException(SerializationError::InvalidArgument);
+    const auto typeName = type.get_name().to_string();
+    auto array = [&]
+    {
+        if (typeName.find("std::array") == 0)
+            return type.create();
+        return type.create({json.size()});
+    }();
+    if (!array.is_valid())
+        throw SerializationException{SerializationError::UnregisteredType};
+    auto view = array.create_sequential_view();
+    auto start = 0;
+    for (const auto& item : json.items())
+        view.set_value(start++, parseField(*type.get_template_arguments().begin(), item.value()));
+    return array;
 }
 
 variant JsonDeserializer::parseClassField(const rttr::type& type, const nlohmann::json& json)
 {
     auto value = type.create();
     if (!value.is_valid())
-        throw SerializationException{SerializationError::Unknown};
+        throw SerializationException{SerializationError::UnregisteredType};
     for (const auto& property : type.get_properties())
         if (!property.set_value(value, parseField(property.get_type(), json[property.get_name()])))
             throw SerializationException{SerializationError::InvalidArgument};
@@ -77,11 +103,11 @@ variant JsonDeserializer::parseClassField(const rttr::type& type, const nlohmann
 
 variant JsonDeserializer::parseEnumerationField(const rttr::type& type, const nlohmann::json& json)
 {
-    throw SerializationException(SerializationError::InvalidArgument);
+    return type.get_enumeration().name_to_value(json.get<std::string>());
 }
 
 variant JsonDeserializer::parseWrapperField(const rttr::type& type, const nlohmann::json& json)
 {
-    throw SerializationException(SerializationError::InvalidArgument);
+    return parseField(type.get_wrapped_type(), json);
 }
 }    // namespace lilith::parsers::json

@@ -12,6 +12,8 @@ String toString(SerializationError error)
         return "A value is of an invalid type.";
     case SerializationError::ErrorWhileParsing:
         return "An error has occurred while parsing a value.";
+    case SerializationError::UnregisteredType:
+        return "Failed to initialize a value of an unregistered type.";
     default:
         return "An unknown error has occurred.";
     }

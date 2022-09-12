@@ -16,6 +16,7 @@ enum class SerializationError
     InvalidArgument,
     InvalidType,
     ErrorWhileParsing,
+    UnregisteredType,
     Unknown,
 };
 

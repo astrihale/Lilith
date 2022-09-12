@@ -4,6 +4,7 @@
 #include "lilith/Types.h"
 #include "lilith/parsers/SerializationException.h"
 
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <rttr/registration.h>
 #include <rttr/type.h>
@@ -36,17 +37,17 @@ private:
 
 template <typename T> T JsonDeserializer::parseObject(const nlohmann::json& json)
 {
-    try
-    {
-        const auto& type = rttr::type::get<T>();
-        if (!type.is_valid())
-            throw SerializationError(SerializationError::InvalidType);
-        return parseField(type, json).template get_wrapped_value<T>();
-    }
-    catch (const nlohmann::json::exception& exception)
-    {
-        throw SerializationError(SerializationError::ErrorWhileParsing);
-    }
+    //    try
+    //    {
+    const auto& type = rttr::type::get<T>();
+    if (!type.is_valid())
+        throw SerializationException{SerializationError::InvalidType};
+    return parseField(type, json).template get_wrapped_value<T>();
+    //    }
+    //    catch (const nlohmann::json::exception& exception)
+    //    {
+    //        throw SerializationException{SerializationError::ErrorWhileParsing};
+    //    }
 }
 }    // namespace lilith::parsers::json
 
