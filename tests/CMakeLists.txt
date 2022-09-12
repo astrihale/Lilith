@@ -14,24 +14,29 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wall -Werro
 
 # Catch2
 find_package(Catch2)
-if (NOT Catch2_FOUND)
-    FetchContent_Declare(
+if (NOT TARGET Catch2)
+    ExternalProject_Add(
             Catch2
             GIT_REPOSITORY https://github.com/catchorg/Catch2
             GIT_TAG v3.0.1
+            CMAKE_ARGS
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_PREFIX_PATH}
+            -DCATCH_BUILD_TESTING=OFF
+            -DCATCH_BUILD_EXAMPLES=OFF
+            -DCATCH_BUILD_EXTRA_TESTS=OFF
     )
-    FetchContent_MakeAvailable(Catch2)
 endif ()
 
 # FakeIt
 find_package(FakeIt)
-if (NOT FakeIt_FOUND)
-    FetchContent_Declare(
+if (NOT TARGET FakeIt)
+    ExternalProject_Add(
             FakeIt
             GIT_REPOSITORY https://github.com/libenike/FakeIt
             GIT_TAG feature/add_cmake_support
+            CMAKE_ARGS
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_PREFIX_PATH}
     )
-    FetchContent_MakeAvailable(FakeIt)
 endif ()
 
 # Collect the tests files
@@ -44,3 +49,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE FakeIt::FakeIt Catch2::Catch2WithM
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_BINARY_DIR}/include ${CMAKE_PREFIX_PATH}/include)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
+add_dependencies(${PROJECT_NAME} Catch2 FakeIt)

@@ -85,6 +85,8 @@ RTTR_REGISTRATION
 
     registration::class_<Point>("Point").constructor<>().property("x", &Point::x).property("y", &Point::y);
 
+    registration::class_<TextObject>("TextObject").constructor().property("text", &TextObject::text);
+
     registration::class_<TestObject>("TestObject")
       .constructor<Point&>()
       .property("point", &TestObject::point)
@@ -152,43 +154,20 @@ TEST_CASE("TypeTests")
     SECTION("Deserialize a string")
     {
         const auto string = json::JsonDeserializer::parseObject<std::string>(nlohmann::json::parse("\"HelloWorld!\""));
-        REQUIRE(string.has_value());
-        REQUIRE(string.value() == "HelloWorld!");
-        std::cout << string.value() << std::endl;
+        REQUIRE(string == "HelloWorld!");
     }
 
     SECTION("Deserialize the point")
     {
         const auto point = json::JsonDeserializer::parseObject<Point>(nlohmann::json::parse(R"({"x":1.0,"y":2.0})"));
-        REQUIRE(point.has_value());
-        const auto& pointValue = point.value();
-        //        REQUIRE(pointValue.x == 1.0);
-        //        REQUIRE(pointValue.y == 2.0);
-        std::cout << "X: " << pointValue.x << " Y: " << pointValue.y << std::endl;
+        REQUIRE(point.x == 1.0);
+        REQUIRE(point.y == 2.0);
     }
 
     SECTION("Deserialize the text")
     {
         const auto textJson = nlohmann::json::parse(R"({"text":"HelloWorld!"})");
-        const auto textOpt = json::JsonDeserializer::parseObject<TextObject>(textJson);
-        REQUIRE(textOpt.has_value());
-        const auto text = textOpt.value();
+        const auto text = json::JsonDeserializer::parseObject<TextObject>(textJson);
         REQUIRE(text.text == "HelloWorld!");
-    }
-
-    SECTION("Try this manually")
-    {
-        const auto type = rttr::type::get<Point>();
-        auto value = type.create();
-
-        const auto x = type.get_property("x");
-        REQUIRE(x.set_value(value, 3.0));
-
-        auto point = value.get_value<Point>();
-        std::cout << "Point:" << std::endl;
-        std::cout << "\tX = " << point.x << std::endl;
-        std::cout << "\tY = " << point.y << std::endl;
-        REQUIRE(point.x == 3.0);
-        REQUIRE(point.y == 0.0);
     }
 }

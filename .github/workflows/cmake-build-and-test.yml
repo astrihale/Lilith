@@ -12,10 +12,10 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ macos-latest, ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
+    #    strategy:
+    #      matrix:
+    #        os: [ macos-latest, ubuntu-latest ]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
 
