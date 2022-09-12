@@ -28,7 +28,7 @@ public:
             variants.template emplace_back(variant);
     }
 
-    template <typename T> [[nodiscard]] T get(std::size_t index)
+    template <typename T> [[nodiscard]] T get(std::size_t index) const
     {
         if (index >= variants.size())
             throw std::runtime_error("Invalid index.");
