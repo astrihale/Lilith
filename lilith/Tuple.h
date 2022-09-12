@@ -20,6 +20,8 @@ public:
             variants.template emplace_back(std::get<i>(tuple));
     }
 
+    explicit Tuple() : variants() {}
+
     explicit Tuple(const std::vector<variant>& vector) : variants{}
     {
         for (const auto& variant : vector)
