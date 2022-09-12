@@ -39,17 +39,17 @@ private:
 
 template <typename T> T JsonDeserializer::parseObject(const nlohmann::json& json)
 {
-    //    try
-    //    {
-    const auto& type = rttr::type::get<T>();
-    if (!type.is_valid())
-        throw SerializationException{SerializationError::InvalidType};
-    return parseField(type, json).template get_wrapped_value<T>();
-    //    }
-    //    catch (const nlohmann::json::exception& exception)
-    //    {
-    //        throw SerializationException{SerializationError::ErrorWhileParsing};
-    //    }
+    try
+    {
+        const auto& type = rttr::type::get<T>();
+        if (!type.is_valid())
+            throw SerializationException{SerializationError::InvalidType};
+        return parseField(type, json).template get_wrapped_value<T>();
+    }
+    catch (const nlohmann::json::exception& exception)
+    {
+        throw SerializationException{SerializationError::ErrorWhileParsing};
+    }
 }
 }    // namespace lilith::parsers::json
 

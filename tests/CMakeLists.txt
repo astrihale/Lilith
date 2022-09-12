@@ -4,7 +4,7 @@ project(LilithTests)
 
 # Set the standard and the build flags
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors \
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wall -Werror -Wextra -pedantic -pedantic-errors \
  -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-documentation-unknown-command \
  -Wno-covered-switch-default -Wno-switch-enum -Wno-sign-conversion -Wno-double-promotion -Wno-old-style-cast \
  -Wno-extra-semi -Wno-exit-time-destructors -Wno-non-virtual-dtor -Wno-suggest-destructor-override \

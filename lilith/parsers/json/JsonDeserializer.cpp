@@ -58,21 +58,37 @@ variant JsonDeserializer::parseAssociativeContainerField(const rttr::type& type,
 {
     const auto typeName = type.get_name().to_string();
     const auto keyType = *type.get_template_arguments().begin();
-    const auto valueType = *(++type.get_template_arguments().begin());
-    auto map = type.create();
-    if (!map.is_valid())
+
+    auto collection = type.create();
+    if (!collection.is_valid())
         throw SerializationException{SerializationError::UnregisteredType};
-    auto view = map.create_associative_view();
-    for (const auto& item : json.items())
-        view.insert(parseField(keyType,
-                               [&]
-                               {
-                                   if (keyType.get_name().to_string().find("std::string") == 0)
-                                       return nlohmann::json::parse('"' + item.key() + '"');
-                                   return nlohmann::json::parse(item.key());
-                               }()),
-                    parseField(valueType, item.value()));
-    return map;
+    auto view = collection.create_associative_view();
+
+    if (typeName.find("std::map") == 0 || typeName.find("std::multimap") == 0)
+    {
+        const auto valueType = *(++type.get_template_arguments().begin());
+        for (const auto& item : json.items())
+            view.insert(parseField(keyType,
+                                   [&]
+                                   {
+                                       if (keyType.get_name().to_string().find("std::string") == 0)
+                                           return nlohmann::json::parse('"' + item.key() + '"');
+                                       return nlohmann::json::parse(item.key());
+                                   }()),
+                        parseField(valueType, item.value()));
+    }
+    else
+    {
+        for (const auto& item : json.items())
+            view.insert(parseField(keyType,
+                                   [&]
+                                   {
+                                       if (keyType.get_name().to_string().find("std::string") == 0)
+                                           return nlohmann::json::parse('"' + item.key() + '"');
+                                       return nlohmann::json::parse(item.key());
+                                   }()));
+    }
+    return collection;
 }
 
 variant JsonDeserializer::parseArrayField(const rttr::type& type, const nlohmann::json& json)

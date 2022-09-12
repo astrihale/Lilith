@@ -41,6 +41,7 @@ RTTR_REGISTRATION
     registration::class_<std::array<std::int32_t, 3>>("std::array<std::int32_t, 3>").constructor();
     registration::class_<std::vector<std::int32_t>>("std::vector<std::int32_t>").constructor<std::size_t>();
     registration::class_<std::map<std::string, std::int32_t>>("std::map<std::string, std::int32_t>>").constructor();
+    registration::class_<std::set<std::int32_t>>("std::set<std::int32_t>").constructor();
 
     registration::class_<lilith::Pair<std::string, std::uint64_t>>("lilith::Pair<std::string, std::uint64_t>")
       .constructor<std::vector<variant>>()
@@ -141,6 +142,18 @@ void MapExample()
     std::cout << "Map as json: " << outputJson.dump() << std::endl;
 }
 
+void SetExample()
+{
+    const auto inputJson = nlohmann::json::parse(R"([1,2,3])");
+    auto set = lilith::parsers::json::JsonDeserializer::parseObject<std::set<std::int32_t>>(inputJson);
+    std::cout << "Set as value: " << std::endl;
+    for (const auto& kvp : set)
+        std::cout << "\t" << kvp << std::endl;
+
+    const auto outputJson = lilith::parsers::json::JsonSerializer::parseObject(set);
+    std::cout << "Set as json: " << outputJson.dump() << std::endl;
+}
+
 void PairExample()
 {
     const auto inputJson = nlohmann::json::parse(R"(["TestString", 623])");
@@ -181,6 +194,7 @@ int main()
     ArrayExample();
     VectorExample();
     MapExample();
+    SetExample();
     PairExample();
     TupleExample();
     return 0;
