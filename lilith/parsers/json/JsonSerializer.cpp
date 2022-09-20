@@ -1,5 +1,6 @@
 #include "lilith/parsers/json/JsonSerializer.h"
 
+#include <iostream>
 #include <sstream>
 
 namespace lilith::parsers::json
@@ -98,12 +99,27 @@ nlohmann::json JsonSerializer::parseClassField(const variant& variant)
 
 nlohmann::json JsonSerializer::parseTuplelike(const rttr::variant& tupleVariant)
 {
-    const auto variants = tupleVariant.get_type()
-                            .get_property("variants")
-                            .get_value(tupleVariant)
-                            .get_wrapped_value<std::vector<variant>>();
+    const auto type = tupleVariant.get_type();
+    if (!type.is_valid())
+    {
+        std::cout << "1" << std::endl;
+        return {};
+    }
+    const auto propertyAccessor = type.get_property("variants");
+    if (!propertyAccessor.is_valid())
+    {
+        std::cout << "2" << std::endl;
+        return {};
+    }
+    const auto variants = propertyAccessor.get_value(tupleVariant);
+    if (!variants.is_valid())
+    {
+        std::cout << "3" << std::endl;
+        return {};
+    }
+    const auto& vector = variants.get_wrapped_value<std::vector<variant>>();
     auto array = nlohmann::json{};
-    for (const auto& variant : variants)
+    for (const auto& variant : vector)
         array += parseField(variant);
     return array;
 }
