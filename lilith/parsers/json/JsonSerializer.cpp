@@ -102,19 +102,19 @@ nlohmann::json JsonSerializer::parseTuplelike(const rttr::variant& tupleVariant)
     const auto type = tupleVariant.get_type();
     if (!type.is_valid())
     {
-        std::cout << "1" << std::endl;
+        std::cout << "Error type 1: '" << type.get_name() << "'." << std::endl;
         return {};
     }
     const auto propertyAccessor = type.get_property("variants");
     if (!propertyAccessor.is_valid())
     {
-        std::cout << "2" << std::endl;
+        std::cout << "Error type 2: '" << type.get_name() << "'." << std::endl;
         return {};
     }
     const auto variants = propertyAccessor.get_value(tupleVariant);
     if (!variants.is_valid())
     {
-        std::cout << "3" << std::endl;
+        std::cout << "Error type 3: '" << type.get_name() << "'." << std::endl;
         return {};
     }
     const auto& vector = variants.get_wrapped_value<std::vector<variant>>();
